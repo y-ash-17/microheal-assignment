@@ -1,0 +1,44 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-microheal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-microheal}
+      POSTGRES_DB: ${POSTGRES_DB:-microheal}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 3s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      network: host
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-microheal}:${POSTGRES_PASSWORD:-microheal}@db:5432/${POSTGRES_DB:-microheal}
+      SYNC_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-microheal}:${POSTGRES_PASSWORD:-microheal}@db:5432/${POSTGRES_DB:-microheal}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-12.0}
+      DB_TIMEOUT_SECONDS: ${DB_TIMEOUT_SECONDS:-5.0}
+      MAX_TOOL_CALLS_PER_TURN: ${MAX_TOOL_CALLS_PER_TURN:-4}
+      RETRIEVAL_SIMILARITY_THRESHOLD: ${RETRIEVAL_SIMILARITY_THRESHOLD:-0.22}
+    ports:
+      - "8000:8000"
+    volumes:
+      - modelcache:/root/.cache/huggingface
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  modelcache:

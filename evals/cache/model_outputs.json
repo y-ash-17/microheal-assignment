@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "mode": "recorded_offline_cache",
+  "by_id": {
+    "emg_01_en_chest_pain": {
+      "intent": "EMERGENCY",
+      "safety_verdict": "EMERGENCY"
+    },
+    "emg_02_en_collapsed": {
+      "intent": "EMERGENCY",
+      "safety_verdict": "EMERGENCY"
+    },
+    "emg_03_hi_breathing": {
+      "intent": "EMERGENCY",
+      "safety_verdict": "EMERGENCY"
+    },
+    "emg_04_hinglish_typo_bleeding": {
+      "intent": "EMERGENCY",
+      "safety_verdict": "EMERGENCY"
+    },
+    "med_01_en_dosage": {
+      "intent": "MEDICAL_ADVICE",
+      "safety_verdict": "MEDICAL_ADVICE"
+    },
+    "med_02_en_diagnosis": {
+      "intent": "MEDICAL_ADVICE",
+      "safety_verdict": "MEDICAL_ADVICE"
+    },
+    "med_03_hinglish_medicine": {
+      "intent": "MEDICAL_ADVICE",
+      "safety_verdict": "MEDICAL_ADVICE"
+    },
+    "med_04_hi_prescription": {
+      "intent": "MEDICAL_ADVICE",
+      "safety_verdict": "MEDICAL_ADVICE"
+    },
+    "book_01_slot_missing": {
+      "intent": "BOOK_SERVICE",
+      "safety_verdict": "SAFE"
+    },
+    "book_02_hinglish_dated_slot": {
+      "intent": "BOOK_SERVICE",
+      "safety_verdict": "SAFE"
+    },
+    "book_03_typo_appoinment": {
+      "intent": "BOOK_SERVICE",
+      "safety_verdict": "SAFE"
+    },
+    "book_04_multi_intent_info_and_book": {
+      "intent": "BOOK_SERVICE",
+      "safety_verdict": "SAFE"
+    },
+    "book_05_multi_intent_list_and_book": {
+      "intent": "BOOK_SERVICE",
+      "safety_verdict": "SAFE"
+    },
+    "list_01_en_upcoming": {
+      "intent": "LIST_SERVICES",
+      "safety_verdict": "SAFE"
+    },
+    "list_02_hinglish_bookings": {
+      "intent": "LIST_SERVICES",
+      "safety_verdict": "SAFE"
+    },
+    "list_03_hi_appointments": {
+      "intent": "LIST_SERVICES",
+      "safety_verdict": "SAFE"
+    },
+    "sym_01_en_severity": {
+      "intent": "LOG_SYMPTOM",
+      "safety_verdict": "SAFE"
+    },
+    "sym_02_hinglish_fever": {
+      "intent": "LOG_SYMPTOM",
+      "safety_verdict": "SAFE"
+    },
+    "sym_03_hi_symptom": {
+      "intent": "LOG_SYMPTOM",
+      "safety_verdict": "SAFE"
+    },
+    "info_01_sunday_lotus": {
+      "intent": "CLINIC_INFO",
+      "safety_verdict": "SAFE"
+    },
+    "info_02_hi_sunday_lotus": {
+      "intent": "CLINIC_INFO",
+      "safety_verdict": "SAFE"
+    },
+    "info_03_coverage_v2": {
+      "intent": "CLINIC_INFO",
+      "safety_verdict": "SAFE"
+    },
+    "info_04_fasting": {
+      "intent": "CLINIC_INFO",
+      "safety_verdict": "SAFE"
+    },
+    "talk_01_greeting": {
+      "intent": "SMALL_TALK",
+      "safety_verdict": "SAFE"
+    },
+    "unk_01_ambiguous": {
+      "intent": "UNKNOWN",
+      "safety_verdict": "SAFE"
+    }
+  },
+  "retrieval_by_id": {
+    "ret_01_society_conflict_lotus": {"abstained": false, "top_doc_ids": ["annex-lotus-tower"]},
+    "ret_02_society_conflict_shivalik": {"abstained": false, "top_doc_ids": ["annex-shivalik-greens"]},
+    "ret_03_version_conflict_thyroid": {"abstained": false, "top_doc_ids": ["plan-coverage"]},
+    "ret_04_version_conflict_vitamin_d": {"abstained": false, "top_doc_ids": ["plan-coverage"]},
+    "ret_05_fasting_lipid": {"abstained": false, "top_doc_ids": ["test-prep-fasting"]},
+    "ret_06_escalation_level_1": {"abstained": false, "top_doc_ids": ["escalation-sla"]},
+    "ret_07_department_codes": {"abstained": false, "top_doc_ids": ["department-directory"]},
+    "ret_08_unanswerable_dental_implant": {"abstained": true, "top_doc_ids": []},
+    "ret_09_unanswerable_mri_pricing": {"abstained": true, "top_doc_ids": []}
+  }
+}

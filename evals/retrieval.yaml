@@ -1,0 +1,63 @@
+questions:
+  - id: ret_01_society_conflict_lotus
+    patient_id: pat_010
+    society_id: soc_lotus
+    query: "When does the wellness room open on Sunday?"
+    expected_doc_id: annex-lotus-tower
+    should_abstain: false
+
+  - id: ret_02_society_conflict_shivalik
+    patient_id: pat_003
+    society_id: soc_shivalik
+    query: "When does the wellness room open on Sunday?"
+    expected_doc_id: annex-shivalik-greens
+    should_abstain: false
+
+  - id: ret_03_version_conflict_thyroid
+    patient_id: pat_003
+    society_id: soc_shivalik
+    query: "Is Thyroid Profile covered under the Society Care Plan now?"
+    expected_doc_id: plan-coverage
+    should_abstain: false
+
+  - id: ret_04_version_conflict_vitamin_d
+    patient_id: pat_009
+    society_id: soc_lotus
+    query: "Is Vitamin D 25-OH still covered or what is the member rate?"
+    expected_doc_id: plan-coverage
+    should_abstain: false
+
+  - id: ret_05_fasting_lipid
+    patient_id: pat_003
+    society_id: soc_shivalik
+    query: "How many hours of fasting are needed for Lipid Profile and FBS?"
+    expected_doc_id: test-prep-fasting
+    should_abstain: false
+
+  - id: ret_06_escalation_level_1
+    patient_id: pat_016
+    society_id: soc_royal
+    query: "What is the response time for a Level 1 critical emergency?"
+    expected_doc_id: escalation-sla
+    should_abstain: false
+
+  - id: ret_07_department_codes
+    patient_id: pat_001
+    society_id: soc_shivalik
+    query: "What are the department codes and slot lengths for Cardiology and Physiotherapy?"
+    expected_doc_id: department-directory
+    should_abstain: false
+
+  - id: ret_08_unanswerable_dental_implant
+    patient_id: pat_003
+    society_id: soc_shivalik
+    query: "What is the warranty period on titanium dental implants?"
+    expected_doc_id: null
+    should_abstain: true
+
+  - id: ret_09_unanswerable_mri_pricing
+    patient_id: pat_010
+    society_id: soc_lotus
+    query: "What is the price of a full-body 3T MRI scan at home?"
+    expected_doc_id: null
+    should_abstain: true

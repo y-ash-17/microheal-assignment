@@ -1,0 +1,44 @@
+[
+  {
+    "id": "soc_shivalik",
+    "name": "Shivalik Greens",
+    "city": "Gurugram",
+    "address": "Sector 49, Gurugram",
+    "timezone": "Asia/Kolkata",
+    "annex_doc_id": "annex-shivalik-greens",
+    "hospital": {
+      "name": "Sanjeevani Hospital",
+      "address": "Sector 44, Gurugram",
+      "front_desk_phone": "+91 124 4000 1000",
+      "emergency_phone": "+91 124 4000 1100"
+    }
+  },
+  {
+    "id": "soc_lotus",
+    "name": "Lotus Tower",
+    "city": "Noida",
+    "address": "Sector 62, Noida",
+    "timezone": "Asia/Kolkata",
+    "annex_doc_id": "annex-lotus-tower",
+    "hospital": {
+      "name": "Arogya Multispeciality Hospital",
+      "address": "Sector 61, Noida",
+      "front_desk_phone": "+91 120 4555 2000",
+      "emergency_phone": "+91 120 4555 2200"
+    }
+  },
+  {
+    "id": "soc_royal",
+    "name": "Royal Palms",
+    "city": "Gurugram",
+    "address": "Sector 54, Gurugram",
+    "timezone": "Asia/Kolkata",
+    "annex_doc_id": "annex-royal-palms",
+    "hospital": {
+      "name": "Sanjeevani Hospital",
+      "address": "Sector 44, Gurugram",
+      "front_desk_phone": "+91 124 4000 1000",
+      "emergency_phone": "+91 124 4000 1100"
+    }
+  }
+]

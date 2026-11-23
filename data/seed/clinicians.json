@@ -1,0 +1,420 @@
+[
+  {
+    "id": "cln_01",
+    "name": "Dr. Meera Iyer",
+    "title": "General Physician",
+    "service": "DOCTOR",
+    "subtypes": [
+      "GENERAL_PHYSICIAN"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 20,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "MON",
+        "start": "09:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "WED",
+        "start": "09:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "FRI",
+        "start": "09:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "TUE",
+        "start": "09:00",
+        "end": "10:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "THU",
+        "start": "09:00",
+        "end": "10:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_02",
+    "name": "Dr. Arvind Khanna",
+    "title": "Cardiologist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "CARDIOLOGY"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "TUE",
+        "start": "10:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "THU",
+        "start": "16:00",
+        "end": "17:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_03",
+    "name": "Dr. Farah Siddiqui",
+    "title": "Paediatrician",
+    "service": "DOCTOR",
+    "subtypes": [
+      "PAEDIATRICS"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 20,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "MON",
+        "start": "15:00",
+        "end": "16:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "THU",
+        "start": "15:00",
+        "end": "16:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_04",
+    "name": "Dr. Rohan Bhatt",
+    "title": "Orthopaedic Surgeon",
+    "service": "DOCTOR",
+    "subtypes": [
+      "ORTHOPAEDICS"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "SAT",
+        "start": "10:00",
+        "end": "11:30"
+      }
+    ]
+  },
+  {
+    "id": "cln_05",
+    "name": "Dr. Kavya Menon",
+    "title": "Dermatologist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "DERMATOLOGY"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "WED",
+        "start": "14:00",
+        "end": "15:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "FRI",
+        "start": "14:00",
+        "end": "15:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_06",
+    "name": "Sunita Rawat",
+    "title": "Phlebotomist",
+    "service": "LAB",
+    "subtypes": [
+      "CBC",
+      "FASTING_BLOOD_SUGAR",
+      "HBA1C",
+      "LIPID_PROFILE",
+      "LFT",
+      "KFT",
+      "THYROID_PROFILE",
+      "VITAMIN_D",
+      "URINE_ROUTINE"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 15,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "MON",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "TUE",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "WED",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "THU",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "FRI",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "SAT",
+        "start": "07:00",
+        "end": "08:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "MON",
+        "start": "08:00",
+        "end": "09:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "TUE",
+        "start": "08:00",
+        "end": "09:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "WED",
+        "start": "08:00",
+        "end": "09:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "THU",
+        "start": "08:00",
+        "end": "09:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "FRI",
+        "start": "08:00",
+        "end": "09:00"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "SAT",
+        "start": "08:00",
+        "end": "09:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_07",
+    "name": "Imran Qureshi",
+    "title": "Physiotherapist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "PHYSIOTHERAPY"
+    ],
+    "hospital": "Sanjeevani Hospital",
+    "slot_minutes": 45,
+    "availability": [
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "TUE",
+        "start": "17:00",
+        "end": "18:30"
+      },
+      {
+        "society_id": "soc_shivalik",
+        "weekday": "THU",
+        "start": "17:00",
+        "end": "18:30"
+      },
+      {
+        "society_id": "soc_royal",
+        "weekday": "SAT",
+        "start": "17:00",
+        "end": "18:30"
+      }
+    ]
+  },
+  {
+    "id": "cln_08",
+    "name": "Dr. Prakash Nair",
+    "title": "General Physician",
+    "service": "DOCTOR",
+    "subtypes": [
+      "GENERAL_PHYSICIAN"
+    ],
+    "hospital": "Arogya Multispeciality Hospital",
+    "slot_minutes": 20,
+    "availability": [
+      {
+        "society_id": "soc_lotus",
+        "weekday": "MON",
+        "start": "10:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "TUE",
+        "start": "10:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "WED",
+        "start": "10:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "THU",
+        "start": "10:00",
+        "end": "11:00"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "FRI",
+        "start": "10:00",
+        "end": "11:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_09",
+    "name": "Dr. Neha Kapoor",
+    "title": "Cardiologist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "CARDIOLOGY"
+    ],
+    "hospital": "Arogya Multispeciality Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_lotus",
+        "weekday": "WED",
+        "start": "11:00",
+        "end": "12:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_10",
+    "name": "Dr. Sameer Joshi",
+    "title": "ENT Specialist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "ENT"
+    ],
+    "hospital": "Arogya Multispeciality Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_lotus",
+        "weekday": "FRI",
+        "start": "15:00",
+        "end": "16:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_11",
+    "name": "Dr. Anjali Deshpande",
+    "title": "Gynaecologist",
+    "service": "DOCTOR",
+    "subtypes": [
+      "GYNAECOLOGY"
+    ],
+    "hospital": "Arogya Multispeciality Hospital",
+    "slot_minutes": 30,
+    "availability": [
+      {
+        "society_id": "soc_lotus",
+        "weekday": "TUE",
+        "start": "14:00",
+        "end": "15:00"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "THU",
+        "start": "14:00",
+        "end": "15:00"
+      }
+    ]
+  },
+  {
+    "id": "cln_12",
+    "name": "Ravi Kumar",
+    "title": "Phlebotomist",
+    "service": "LAB",
+    "subtypes": [
+      "CBC",
+      "FASTING_BLOOD_SUGAR",
+      "HBA1C",
+      "LIPID_PROFILE",
+      "LFT",
+      "KFT",
+      "THYROID_PROFILE",
+      "VITAMIN_D",
+      "URINE_ROUTINE"
+    ],
+    "hospital": "Arogya Multispeciality Hospital",
+    "slot_minutes": 15,
+    "availability": [
+      {
+        "society_id": "soc_lotus",
+        "weekday": "MON",
+        "start": "07:30",
+        "end": "08:30"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "TUE",
+        "start": "07:30",
+        "end": "08:30"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "WED",
+        "start": "07:30",
+        "end": "08:30"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "THU",
+        "start": "07:30",
+        "end": "08:30"
+      },
+      {
+        "society_id": "soc_lotus",
+        "weekday": "FRI",
+        "start": "07:30",
+        "end": "08:30"
+      }
+    ]
+  }
+]
