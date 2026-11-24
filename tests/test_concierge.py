@@ -1,18 +1,26 @@
 import asyncio
+import uuid
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import delete
 
 from app.agent import run_concierge_turn
 from app.booking import BookingConflictError, create_or_get_booking
 from app.db import AsyncSessionLocal
 from app.main import app
+from app.models import ServiceRequest
 from app.safety import assess_safety
 
 
 @pytest.mark.asyncio
 async def test_duplicate_request_id_idempotency():
-    req_id = "test_req_idempotency_001"
+    req_id = f"test_req_idempotency_{uuid.uuid4()}"
     thread_id = "test_thread_idempotency_001"
+    slot = "2027-02-15T09:00:00+05:30"
+
+    async with AsyncSessionLocal() as cleanup:
+        await cleanup.execute(delete(ServiceRequest).where(ServiceRequest.scheduled_for == slot))
+        await cleanup.commit()
 
     async with AsyncSessionLocal() as s1:
         b1 = await create_or_get_booking(
@@ -23,7 +31,7 @@ async def test_duplicate_request_id_idempotency():
             clinician_id="cln_01",
             service="DOCTOR",
             subtype="GENERAL_PHYSICIAN",
-            slot_start="2026-11-23T09:00:00+05:30",
+            slot_start=slot,
         )
 
     async with AsyncSessionLocal() as s2:
@@ -35,7 +43,7 @@ async def test_duplicate_request_id_idempotency():
             clinician_id="cln_01",
             service="DOCTOR",
             subtype="GENERAL_PHYSICIAN",
-            slot_start="2026-11-23T09:00:00+05:30",
+            slot_start=slot,
         )
 
     assert b1["booking_id"] == b2["booking_id"]
@@ -44,14 +52,18 @@ async def test_duplicate_request_id_idempotency():
 
 @pytest.mark.asyncio
 async def test_concurrent_double_booking_lock():
-    slot = "2026-11-23T09:20:00+05:30"
+    slot = "2027-02-15T09:20:00+05:30"
+
+    async with AsyncSessionLocal() as cleanup:
+        await cleanup.execute(delete(ServiceRequest).where(ServiceRequest.scheduled_for == slot))
+        await cleanup.commit()
 
     async def attempt_book(req_suffix: str):
         async with AsyncSessionLocal() as session:
             try:
                 res = await create_or_get_booking(
                     session,
-                    request_id=f"test_concurrent_{req_suffix}",
+                    request_id=f"test_concurrent_{uuid.uuid4()}_{req_suffix}",
                     thread_id="test_thread_concurrent",
                     patient_id="pat_003",
                     clinician_id="cln_01",

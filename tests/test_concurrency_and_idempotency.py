@@ -65,6 +65,38 @@ async def test_duplicate_request_id_returns_same_booking(db_session_factory, pg_
 
 
 @pytest.mark.asyncio
+async def test_concurrent_duplicate_request_id_returns_one_booking(db_session_factory, toolbox):
+    """Two simultaneous deliveries of one request_id create one row and return that row to both."""
+    slot = "2027-02-22T09:20:00+05:30"  # Monday, within Dr. Iyer's 20-minute grid
+    shared_req_id = f"req-concurrent-dup-{uuid.uuid4()}"
+
+    async with db_session_factory() as s:
+        await s.execute(delete(ServiceRequest).where(ServiceRequest.scheduled_for == slot))
+        await s.commit()
+
+    r1, r2 = await asyncio.gather(
+        toolbox.book_service("pat_001", "DOCTOR", "GENERAL_PHYSICIAN", slot, shared_req_id),
+        toolbox.book_service("pat_001", "DOCTOR", "GENERAL_PHYSICIAN", slot, shared_req_id),
+    )
+
+    assert r1.get("status") == "CONFIRMED"
+    assert r2.get("status") == "CONFIRMED"
+    assert r1["id"] == r2["id"]
+    assert sorted([bool(r1.get("idempotent_replay")), bool(r2.get("idempotent_replay"))]) == [
+        False,
+        True,
+    ]
+
+    async with db_session_factory() as s:
+        cnt = await s.scalar(
+            select(func.count())
+            .select_from(ServiceRequest)
+            .where(ServiceRequest.request_id == shared_req_id)
+        )
+        assert cnt == 1
+
+
+@pytest.mark.asyncio
 async def test_duplicate_chat_request_returns_the_original_booking(
     db_session_factory, pg_checkpointer, toolbox
 ):

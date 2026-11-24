@@ -1,5 +1,4 @@
 import asyncio
-import hashlib
 import json
 import os
 import re
@@ -108,24 +107,6 @@ def parse_frontmatter_and_sections(md_text: str, doc_id: str) -> tuple[dict, lis
     return meta, list(deduped.values())
 
 
-def deterministic_embedding(text: str, dim: int = 1536) -> list[float]:
-    vec = [0.0] * dim
-    tokens = re.findall(r"[a-z0-9_]+", text.lower())
-    if not tokens:
-        return vec
-    for i, tok in enumerate(tokens):
-        digest = hashlib.sha256(f"{tok}:{i}".encode("utf-8")).digest()
-        for j in range(0, len(digest), 2):
-            idx = int.from_bytes(digest[j : j + 2], "big") % dim
-            sign = 1.0 if (digest[j] % 2 == 0) else -1.0
-            vec[idx] += sign
-
-    norm = sum(x * x for x in vec) ** 0.5
-    if norm > 0:
-        vec = [x / norm for x in vec]
-    return vec
-
-
 async def seed_all() -> None:
     async with AsyncSessionLocal() as session:
         societies_path = SEED_DIR / "societies.json"
@@ -232,6 +213,12 @@ async def seed_all() -> None:
                     emb = embed_text(
                         f"{ch_copy['title']} {ch_copy['heading_path']} {ch_copy['section']} {ch_copy['content']}"
                     )
+                    if not any(emb):
+                        raise RuntimeError(
+                            "Embedding model BAAI/bge-small-en-v1.5 is unavailable; "
+                            "refusing to ingest zero-vector chunks. Ensure the fastembed "
+                            "model is cached or reachable from the app container."
+                        )
                     existing_chunk = (
                         await session.execute(select(DocChunk).where(DocChunk.chunk_id == ch_copy["chunk_id"]))
                     ).scalar_one_or_none()

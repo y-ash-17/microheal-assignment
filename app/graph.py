@@ -310,15 +310,24 @@ def build_care_concierge_graph(
                     err_msg = str(exc)
 
             lang = _detect_language(user_msg)
-            if lang in ("hi", "hinglish"):
+            if lang == "hinglish":
+                reply = (
+                    f"Emergency (Level {esc_level}, {esc_id or 'ESCALATED'}): Turant **112** par call karein "
+                    f"aur callback ka intezaar na karein. Escalation store ho gaya hai (SLA: {sla} minutes). "
+                    f"Is demo me nurse ko automatic paging nahi hai, isliye kisi nurse se contact nahi kiya gaya."
+                )
+            elif lang == "hi":
                 reply = (
                     f"आपातकालीन स्थिति (स्तर {esc_level}, {esc_id or 'ESCALATED'}): कृपया तुरंत **112** पर कॉल करें "
-                    f"और कॉलबैक की प्रतीक्षा न करें। ऑन-ड्यूटी नर्स को अलर्ट भेज दिया गया है (SLA: {sla} मिनट)।"
+                    f"और कॉलबैक की प्रतीक्षा न करें। एस्केलेशन दर्ज कर लिया गया है (SLA: {sla} मिनट)। "
+                    f"इस डेमो में नर्स को स्वचालित पेजिंग कॉन्फ़िगर नहीं है, इसलिए किसी नर्स को स्वतः सूचित नहीं किया गया है।"
                 )
             else:
                 reply = (
                     f"Emergency Escalation (Level {esc_level}, {esc_id or 'LOGGED'}): Please call **112** "
-                    f"immediately and do not wait for a callback. On-duty wellness room nurse has been notified (SLA: {sla} minutes)."
+                    f"immediately and do not wait for a callback. The escalation has been stored "
+                    f"(SLA: {sla} minutes). This demo has no external nurse paging configured, so no nurse "
+                    f"has been contacted automatically."
                 )
 
             return {

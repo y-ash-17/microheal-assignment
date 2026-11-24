@@ -27,8 +27,20 @@
 - **Fallback:** If no key is configured, or a model call fails, deterministic intent routing and scoped retrieval still provide a safe response. Safety classification remains fail-closed.
 - **Cost:** Tool-calling and response quality vary by provider/model, so a deployment must use a model that supports the required OpenAI-compatible chat and tool-call APIs.
 
-## 4. Retrieval startup behavior: preserve correctness over availability of a remote model download
+## 4. Retrieval ranker: dense cosine only
 
-- **Choice:** `fastembed` provides dense embeddings when its model is available; retrieval also has a deterministic keyword-scoring component and abstains below the configured threshold.
-- **Outcome:** The service can still return scoped policy results when the embedding model is unavailable, rather than exposing cross-society data or inventing an answer.
-- **Deployment note:** The local Compose configuration persists the Hugging Face cache in `modelcache` to avoid repeated model downloads after container restarts.
+- **Choice:** The core retriever ranks scoped `doc_chunks` by pgvector cosine distance to a `BAAI/bge-small-en-v1.5` query embedding. No keyword score, domain-term boost, annex boost, or coverage boost is added.
+- **Rejected option:** Blending dense similarity with keyword overlap and hand-written domain/annex boosts in the core path.
+- **Why reject it:** The brief specifies dense search for the core. The blended score was not a similarity score, so its threshold could not be interpreted as evidence about embedding quality, and it masked cases where dense retrieval alone failed. A hybrid lexical+dense ranker remains the documented good-to-have and would need its own ablation.
+- **Threshold:** `RETRIEVAL_SIMILARITY_THRESHOLD=0.63` on dense cosine similarity. On the nine-question retrieval set the lowest correct-answer score was 0.6699 and the highest unanswerable-question score was 0.5899, so 0.63 sits near the midpoint and abstains for both corpus-unanswerable questions; it is configurable for re-tuning.
+- **Cost:** Dense-only retrieval is sensitive to wording and needs the local embedding model. If the model is unavailable the retriever abstains instead of silently falling back to keyword matching.
+- **Isolation:** Society applicability, `superseded_by IS NULL`, and internal-note exclusion are SQL `WHERE` predicates applied before ranking, not Python post-filters.
+- **Proof:** The default `make eval` now runs retrieval live against pgvector; `make eval-replay` exists only for a deliberately offline replay.
+
+## 5. Patient identity: trusted demo input, not authentication
+
+- **Choice:** The demo accepts `patient_id` in the chat request and `thread_id` in the thread lookup, and uses them as supplied. Society scoping and booking ownership still constrain what the tools read and write.
+- **Rejected option:** Implementing full resident authentication (JWT/OTP, session-derived patient identity, thread ownership checks) inside the assignment timebox.
+- **Why reject it for now:** The fixed contract has no auth fields or login flow, and inventing one would expand the surface beyond the graded core. The assignment is a controlled demo, so the risk can be stated rather than hidden.
+- **Cost:** This blocks real-patient use. A caller who knows another patient's ID or thread ID could act as or read that patient's conversation; there is no proof that the caller owns the identity.
+- **Production fix:** Derive `patient_id` and `society_id` from an authenticated session, authorize every `thread_id` against that identity, and keep the existing database-level scoping as defence in depth.

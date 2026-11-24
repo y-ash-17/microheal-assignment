@@ -61,8 +61,17 @@ def canonicalize_slot_iso(value: str, default_tz: str = "Asia/Kolkata") -> str:
 
     This eliminates timezone representation gaps so UTC, local IST, and offset variations
     at the same instant in time map to the exact same string key in Postgres.
+
+    Appointment slots are minute-granular.  A value with non-zero seconds or
+    microseconds is rejected instead of being silently truncated, because
+    truncation would book a different instant than the patient requested.
     """
     dt = _parse_iso_dt(value, default_tz=default_tz)
+    if dt.second != 0 or dt.microsecond != 0:
+        raise SlotValidationError(
+            f"Appointment time {value!r} must be on a whole minute; "
+            "seconds and microseconds are not allowed."
+        )
     dt_local = dt.astimezone(ZoneInfo("Asia/Kolkata"))
     # Canonical format: YYYY-MM-DDTHH:MM:00+05:30
     return dt_local.strftime("%Y-%m-%dT%H:%M:00+05:30")
@@ -199,6 +208,15 @@ async def create_or_get_booking(
     # 4. Canonicalize slot to close timezone offset gaps
     target_slot = canonicalize_slot_iso(target_slot, default_tz=tz_name)
 
+    # A booking must be for a future instant.  Idempotent replays returned above
+    # are exempt so a retry of a previously committed booking still succeeds.
+    slot_dt = _parse_iso_dt(target_slot, default_tz=tz_name)
+    if slot_dt <= datetime.now(ZoneInfo(tz_name)):
+        raise SlotValidationError(
+            f"Requested appointment time {target_slot} is in the past. "
+            "Please choose a future slot."
+        )
+
     if validate_slot:
         try:
             target_slot = validate_clinician_slot(clinician, target_slot, society=society)
@@ -230,6 +248,17 @@ async def create_or_get_booking(
         .first()
     )
     if conflict:
+        # Concurrent duplicate delivery of the *same* request_id can reach this
+        # point after the winning transaction commits but before this session's
+        # original idempotency lookup observed it.  Treat it as a replay rather
+        # than reporting a slot conflict: both callers must see one booking.
+        if conflict.request_id == request_id:
+            if conflict.patient_id != patient_id:
+                raise ValueError(
+                    f"Request ID '{request_id}' belongs to another patient "
+                    f"({conflict.patient_id}), cannot be replayed for {patient_id}."
+                )
+            return _format_booking(conflict, idempotent_replay=True)
         raise BookingConflictError(
             f"That time slot ({target_slot}) is already booked for {clinician.name}. Please choose another slot."
         )

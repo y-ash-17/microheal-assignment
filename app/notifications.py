@@ -1,4 +1,11 @@
-"""Nurse escalation notification dispatch workflow for MicroHeal Care Concierge."""
+"""Local escalation-alert audit workflow for MicroHeal Care Concierge.
+
+This module deliberately does not contact a nurse.  The assignment requires an
+emergency to create a stored escalation row; it does not provide a pager, SMS,
+WhatsApp, or hospital integration.  We therefore record an auditable alert
+payload in-process and return an explicit ``nurse_notified: False`` result so
+the chat response and API never overstate what happened.
+"""
 
 import logging
 from datetime import datetime, timezone
@@ -6,7 +13,8 @@ from typing import Any
 
 logger = logging.getLogger("concierge.notifications")
 
-# In-memory alert audit log for inspection and testing
+# Process-local audit log for inspection and tests.  It is not durable: the
+# durable record of the emergency is the ``escalations`` row in PostgreSQL.
 NOTIFICATION_DISPATCH_LOG: list[dict[str, Any]] = []
 
 
@@ -23,7 +31,14 @@ async def dispatch_nurse_escalation_alert(
     flat: str = "",
     emergency_contact: str = "",
 ) -> dict[str, Any]:
-    """Dispatch a high-priority emergency alert to the duty nurse / wellness room desk."""
+    """Record a local alert entry for an escalation; do not contact a nurse.
+
+    The return value is intentionally explicit about the missing delivery:
+    ``nurse_notified`` is always ``False`` and ``delivery_status`` is
+    ``NOT_SENT``.  A real deployment would replace this function with a pager
+    or hospital-HIS adapter and only then report successful notification.
+    """
+    recorded_at = datetime.now(timezone.utc).isoformat()
     alert_payload = {
         "escalation_id": escalation_id,
         "patient_id": patient_id,
@@ -35,16 +50,18 @@ async def dispatch_nurse_escalation_alert(
         "sla_minutes": sla_minutes,
         "trigger_message": trigger_message,
         "emergency_contact": emergency_contact,
-        "dispatched_at": datetime.now(timezone.utc).isoformat(),
-        "channel": "WELLNESS_ROOM_DESK",
+        "recorded_at": recorded_at,
+        "channel": "LOCAL_AUDIT_LOG",
         "priority": "CRITICAL" if level == 1 else ("HIGH" if level == 2 else "MEDIUM"),
-        "status": "DISPATCHED",
+        "delivery_status": "NOT_SENT",
+        "status": "RECORDED_NOT_SENT",
     }
 
     NOTIFICATION_DISPATCH_LOG.append(alert_payload)
 
     logger.warning(
-        "EMERGENCY_ALERT_DISPATCHED to duty nurse: level=%d sla=%dm patient=%s flat=%s society=%s esc_id=%s",
+        "ESCALATION_ALERT_RECORDED_LOCALLY (nurse_notified=false): level=%d sla=%dm "
+        "patient=%s flat=%s society=%s esc_id=%s",
         level,
         sla_minutes,
         patient_id,
@@ -54,9 +71,15 @@ async def dispatch_nurse_escalation_alert(
     )
 
     return {
-        "nurse_notified": True,
-        "channel": "WELLNESS_ROOM_DESK",
+        "nurse_notified": False,
+        "alert_recorded": True,
+        "channel": "LOCAL_AUDIT_LOG",
+        "delivery_status": "NOT_SENT",
         "alert_id": f"alt_{escalation_id}",
-        "dispatched_at": alert_payload["dispatched_at"],
+        "recorded_at": recorded_at,
         "sla_minutes": sla_minutes,
+        "note": (
+            "No external nurse paging is configured in this demo. The escalation "
+            "is stored in the database and this local audit entry was recorded."
+        ),
     }

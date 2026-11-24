@@ -32,13 +32,25 @@ services:
       LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-12.0}
       DB_TIMEOUT_SECONDS: ${DB_TIMEOUT_SECONDS:-5.0}
       MAX_TOOL_CALLS_PER_TURN: ${MAX_TOOL_CALLS_PER_TURN:-4}
-      RETRIEVAL_SIMILARITY_THRESHOLD: ${RETRIEVAL_SIMILARITY_THRESHOLD:-0.22}
+      RETRIEVAL_SIMILARITY_THRESHOLD: ${RETRIEVAL_SIMILARITY_THRESHOLD:-0.63}
+      FASTEMBED_CACHE_PATH: /root/.cache/fastembed
+    # One command brings up the schema, the corpus, and the API.  Re-running is
+    # safe: migrations are versioned and the seeder upserts by primary key.
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.seed_and_ingest &&
+             exec uvicorn app.main:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
-    volumes:
-      - modelcache:/root/.cache/huggingface
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz').read()"
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
     restart: unless-stopped
 
 volumes:
   pgdata:
-  modelcache:

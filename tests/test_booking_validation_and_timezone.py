@@ -81,3 +81,35 @@ async def test_timezone_gap_closed_between_utc_and_ist(db_session_factory, toolb
     b2 = await toolbox.book_service("pat_003", "DOCTOR", "GENERAL_PHYSICIAN", slot_utc, f"req-{uuid.uuid4()}")
     assert b2.get("status") == "SLOT_TAKEN"
     assert "already booked" in b2.get("error", "").lower() or "already taken" in b2.get("error", "").lower()
+
+
+@pytest.mark.asyncio
+async def test_slot_with_seconds_is_rejected_not_rounded(db_session_factory):
+    """A slot with non-zero seconds is rejected instead of silently truncated."""
+    async with db_session_factory() as session:
+        with pytest.raises(ValueError, match="whole minute"):
+            await create_or_get_booking(
+                session,
+                request_id=f"req-{uuid.uuid4()}",
+                patient_id="pat_001",
+                clinician_id="cln_01",
+                service="DOCTOR",
+                subtype="GENERAL_PHYSICIAN",
+                scheduled_for="2027-02-15T09:00:30+05:30",
+            )
+
+
+@pytest.mark.asyncio
+async def test_past_appointment_is_rejected(db_session_factory):
+    """A booking in the past is rejected before any row is written."""
+    async with db_session_factory() as session:
+        with pytest.raises(ValueError, match="past"):
+            await create_or_get_booking(
+                session,
+                request_id=f"req-{uuid.uuid4()}",
+                patient_id="pat_001",
+                clinician_id="cln_01",
+                service="DOCTOR",
+                subtype="GENERAL_PHYSICIAN",
+                scheduled_for="2020-01-06T09:00:00+05:30",
+            )

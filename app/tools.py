@@ -339,7 +339,14 @@ async def _exec_escalate_emergency(
             "status": existing.status,
             "call_112": existing.level == 1,
             "idempotent_replay": True,
-            "nurse_notified": True,
+            "nurse_notified": False,
+            "alert_recorded": False,
+            "notification_channel": "NONE",
+            "notification_delivery_status": "NOT_SENT",
+            "notification_note": (
+                "Idempotent replay of a stored escalation; no new local alert "
+                "record was created and no nurse was contacted."
+            ),
         }
 
     patient = await db.get(Patient, patient_id)
@@ -386,7 +393,14 @@ async def _exec_escalate_emergency(
             "status": replay.status,
             "call_112": replay.level == 1,
             "idempotent_replay": True,
-            "nurse_notified": True,
+            "nurse_notified": False,
+            "alert_recorded": False,
+            "notification_channel": "NONE",
+            "notification_delivery_status": "NOT_SENT",
+            "notification_note": (
+                "Idempotent replay of a stored escalation; no new local alert "
+                "record was created and no nurse was contacted."
+            ),
         }
     await db.refresh(esc)
 
@@ -416,9 +430,12 @@ async def _exec_escalate_emergency(
         "emergency_contact": esc.emergency_contact,
         "call_112": esc.level == 1,
         "idempotent_replay": False,
-        "nurse_notified": notif.get("nurse_notified", True),
-        "notification_channel": notif.get("channel", "WELLNESS_ROOM_DESK"),
-        "alert_dispatched_at": notif.get("dispatched_at"),
+        "nurse_notified": bool(notif.get("nurse_notified", False)),
+        "alert_recorded": bool(notif.get("alert_recorded", False)),
+        "notification_channel": notif.get("channel", "LOCAL_AUDIT_LOG"),
+        "notification_delivery_status": notif.get("delivery_status", "NOT_SENT"),
+        "alert_recorded_at": notif.get("recorded_at"),
+        "notification_note": notif.get("note", ""),
     }
 
 

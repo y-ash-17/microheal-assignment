@@ -6,8 +6,8 @@ from app.scoping import filter_scoped_chunks
 
 
 @pytest.mark.asyncio
-async def test_emergency_dispatches_nurse_notification(toolbox):
-    """Emergency escalation triggers the duty nurse notification workflow."""
+async def test_emergency_records_local_alert_without_claiming_nurse_contact(toolbox):
+    """Emergency escalation stores a row and records a local audit entry only."""
     start_count = len(NOTIFICATION_DISPATCH_LOG)
     req_id = f"req-emg-{uuid.uuid4()}"
 
@@ -20,15 +20,18 @@ async def test_emergency_dispatches_nurse_notification(toolbox):
     )
 
     assert res.get("status") == "OPEN"
-    assert res.get("nurse_notified") is True
-    assert res.get("notification_channel") == "WELLNESS_ROOM_DESK"
+    assert res.get("nurse_notified") is False
+    assert res.get("alert_recorded") is True
+    assert res.get("notification_channel") == "LOCAL_AUDIT_LOG"
+    assert res.get("notification_delivery_status") == "NOT_SENT"
     assert len(NOTIFICATION_DISPATCH_LOG) == start_count + 1
 
     last_alert = NOTIFICATION_DISPATCH_LOG[-1]
     assert last_alert["patient_id"] == "pat_001"
     assert last_alert["level"] == 1
     assert last_alert["sla_minutes"] == 5
-    assert last_alert["channel"] == "WELLNESS_ROOM_DESK"
+    assert last_alert["channel"] == "LOCAL_AUDIT_LOG"
+    assert last_alert["delivery_status"] == "NOT_SENT"
 
 
 @pytest.mark.asyncio
